@@ -11,6 +11,7 @@ import xlsxwriter
 import base64
 
 
+
 app = Flask(__name__)
 
 
@@ -72,7 +73,7 @@ def process(email):
     babyshop_list = []
     panama_list = []
     bi_list = []
-    header = ['VendorCode','Артикул',	'Tralivali',	'Цена',	'Rozetka',	'Цена',	'Antoshka',	'Цена',	'Babyshop',	'Цена',	'Panama',	'Цена',	'Bi',	'Цена']
+    header = ['VendorCode','Артикул',	'Tralivali',	'Tralivali Цена',	'Rozetka',	'Rozetka Цена',	'Antoshka',	'Antoshka Цена',	'Babyshop',	'Babyshop Цена',	'Panama',	'Panama Цена',	'Bi',	'Bi Цена']
     new_list = []
     new_list.append(header)
     print('Parsing ROZETKA')
@@ -267,14 +268,15 @@ def panama(line):
     art = line[2]
     rez = []
     try:
-        r = requests.get(f'https://panama.ua/search/?q={name}')
+        r = requests.get('https://panama.ua/suggest/?q='+name)
+        y = json.loads(r.text)
+        r = requests.get('https://panama.ua'+y['list'][0]['link'])
+
         soup = bs(r.text,'html.parser')
-        site_price = soup.find('div', 'product__price').getText().replace('грн', '')
-        site_name = soup.find('div','product__desk').getText().strip()
-        tovar_url = 'https://panama.ua/'+soup.find('a','product__link with__stats').get('href')
-        r = requests.get(tovar_url)
+        site_price = soup.find('div','product__price').getText().replace('грн.','')
+        site_name = soup.find('span','product-item__name').getText()
         if art in r.text:
-            if int(our_price) != site_price:
+            if int(our_price) != int(site_price):
                 rez.append(art)
                 rez.append(name)
                 rez.append(our_price)
