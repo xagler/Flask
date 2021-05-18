@@ -76,6 +76,16 @@ def process(email):
     header = ['VendorCode','Артикул',	'Tralivali',	'Tralivali Цена',	'Rozetka',	'Rozetka Цена',	'Antoshka',	'Antoshka Цена',	'Babyshop',	'Babyshop Цена',	'Panama',	'Panama Цена',	'Bi',	'Bi Цена']
     new_list = []
     new_list.append(header)
+
+    print('Parsing Panama')
+    pool = Pool(5)
+    rez = (pool.map(panama, price_name))
+    for line in rez:
+        if line != None:
+            panama_list.append(line)
+
+
+
     print('Parsing ROZETKA')
     pool = Pool(5)
     rez = (pool.map(rozetka,price_name))
