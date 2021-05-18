@@ -73,16 +73,10 @@ def process(email):
     babyshop_list = []
     panama_list = []
     bi_list = []
-    header = ['VendorCode','Артикул',	'Tralivali',	'Tralivali Цена',	'Rozetka',	'Rozetka Цена',	'Antoshka',	'Antoshka Цена',	'Babyshop',	'Babyshop Цена',	'Panama',	'Panama Цена',	'Bi',	'Bi Цена']
+    header = ['VendorCode','Артикул',	'Tralivali',	'Tralivali Цена',	'Rozetka',	'Rozetka Цена',	'Antoshka',	'Antoshka Цена',	'Babyshop',	'Babyshop Цена',	'Bi',	'Bi Цена']
     new_list = []
     new_list.append(header)
 
-    print('Parsing Panama')
-    pool = Pool(5)
-    rez = (pool.map(panama, price_name))
-    for line in rez:
-        if line != None:
-            panama_list.append(line)
 
 
 
@@ -107,12 +101,12 @@ def process(email):
     for line in rez:
         if line != None:
             babyshop_list.append(line)
-    print('Parsing Panama')
-    pool = Pool(5)
-    rez = (pool.map(panama, price_name))
-    for line in rez:
-        if line != None:
-            panama_list.append(line)
+    # print('Parsing Panama')
+    # pool = Pool(5)
+    # rez = (pool.map(panama, price_name))
+    # for line in rez:
+    #     if line != None:
+    #         panama_list.append(line)
     print('Parsing bi')
     pool = Pool(5)
     rez = (pool.map(bi_ua, price_name))
@@ -160,16 +154,16 @@ def process(email):
             temp_list.append('')
         a = 0
 
-        for el in panama_list:
-            if line[2] == el[0]:
-                temp_list.append(el[4])
-                temp_list.append(el[3])
-                a = 1
-        if a == 0:
-            temp_list.append('')
-            temp_list.append('')
-
-        a = 0
+        # for el in panama_list:
+        #     if line[2] == el[0]:
+        #         temp_list.append(el[4])
+        #         temp_list.append(el[3])
+        #         a = 1
+        # if a == 0:
+        #     temp_list.append('')
+        #     temp_list.append('')
+        #
+        # a = 0
 
         for el in bi_list:
             if line[2] == el[0]:
@@ -279,10 +273,8 @@ def panama(line):
     rez = []
     try:
         r = requests.get('https://panama.ua/suggest/?q='+name)
-        print(r.status_code)
         y = json.loads(r.text)
         r = requests.get('https://panama.ua'+y['list'][0]['link'])
-        print(r.status_code)
 
         soup = bs(r.text,'html.parser')
         site_price = soup.find('div','product__price').getText().replace('грн.','')
