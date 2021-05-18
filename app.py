@@ -269,8 +269,10 @@ def panama(line):
     rez = []
     try:
         r = requests.get('https://panama.ua/suggest/?q='+name)
+        print(r.status_code)
         y = json.loads(r.text)
         r = requests.get('https://panama.ua'+y['list'][0]['link'])
+        print(r.status_code)
 
         soup = bs(r.text,'html.parser')
         site_price = soup.find('div','product__price').getText().replace('грн.','')
